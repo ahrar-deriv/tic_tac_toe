@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac_toe/flutter/core/enum.dart';
 import 'package:tic_tac_toe/flutter/presentation/pages/play_ground_page.dart';
 import 'package:tic_tac_toe/flutter/theme_helper/color_helper.dart';
 
@@ -19,7 +20,8 @@ Widget offlineLevelDialog(BuildContext context) {
                 Navigator.of(context).pop();
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => const PlayGroundPage(),
+                    builder: (context) =>
+                        const PlayGroundPage(gameMode: GameMode.simpleOffline),
                   ),
                 );
               },
@@ -45,7 +47,9 @@ Widget offlineLevelDialog(BuildContext context) {
                 Navigator.of(context).pop();
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => const PlayGroundPage(),
+                    builder: (context) => const PlayGroundPage(
+                      gameMode: GameMode.difficultOffline,
+                    ),
                   ),
                 );
               },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac_toe/flutter/core/enum.dart';
 import 'package:tic_tac_toe/flutter/data/fake_data.dart';
 import 'package:tic_tac_toe/flutter/model/player.dart';
 import 'package:tic_tac_toe/flutter/presentation/pages/play_ground_page.dart';
@@ -48,7 +49,9 @@ class SelectCompetitorPage extends StatelessWidget {
             /// Todo : should send this data to server that who user choose to play
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                builder: ((context) => const PlayGroundPage()),
+                builder: ((context) => const PlayGroundPage(
+                      gameMode: GameMode.online,
+                    )),
               ),
             );
           }),

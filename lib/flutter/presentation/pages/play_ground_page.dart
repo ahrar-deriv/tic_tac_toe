@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac_toe/flutter/core/enum.dart';
+import 'package:tic_tac_toe/flutter/core/game_logic/game_board.dart';
+import 'package:tic_tac_toe/flutter/core/game_logic/game_logic.dart';
+import 'package:tic_tac_toe/flutter/core/game_logic/simple_offline_game.dart';
 import 'package:tic_tac_toe/flutter/theme_helper/color_helper.dart';
 import 'package:tic_tac_toe/flutter/theme_helper/dimention_helper.dart';
 
 class PlayGroundPage extends StatefulWidget {
-  const PlayGroundPage({Key? key}) : super(key: key);
+  const PlayGroundPage({required this.gameMode, Key? key}) : super(key: key);
+  final GameMode gameMode;
 
   @override
   State<PlayGroundPage> createState() => _PlayGroundPageState();
@@ -11,6 +16,17 @@ class PlayGroundPage extends StatefulWidget {
 
 class _PlayGroundPageState extends State<PlayGroundPage> {
   String playerName = 'Player Name ';
+  late GameLogic game;
+  GameBoard gameBoard = GameBoard();
+
+  @override
+  void initState() {
+    if (widget.gameMode == GameMode.simpleOffline) {
+      game = SimpleOfflineGame();
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -37,51 +53,15 @@ class _PlayGroundPageState extends State<PlayGroundPage> {
                 mainAxisSpacing: 10,
                 crossAxisCount: 3,
                 children: [
-                  Container(
-                    width: 30,
-                    height: 30,
-                    color: Colors.red,
-                  ),
-                  Container(
-                    width: 30,
-                    height: 30,
-                    color: Colors.red,
-                  ),
-                  Container(
-                    width: 30,
-                    height: 30,
-                    color: Colors.red,
-                  ),
-                  Container(
-                    width: 30,
-                    height: 30,
-                    color: Colors.red,
-                  ),
-                  Container(
-                    width: 30,
-                    height: 30,
-                    color: Colors.red,
-                  ),
-                  Container(
-                    width: 30,
-                    height: 30,
-                    color: Colors.red,
-                  ),
-                  Container(
-                    width: 30,
-                    height: 30,
-                    color: Colors.red,
-                  ),
-                  Container(
-                    width: 30,
-                    height: 30,
-                    color: Colors.red,
-                  ),
-                  Container(
-                    width: 30,
-                    height: 30,
-                    color: Colors.red,
-                  ),
+                  _buildTile(row: 0, col: 0),
+                  _buildTile(row: 0, col: 1),
+                  _buildTile(row: 0, col: 2),
+                  _buildTile(row: 1, col: 0),
+                  _buildTile(row: 1, col: 1),
+                  _buildTile(row: 1, col: 2),
+                  _buildTile(row: 2, col: 0),
+                  _buildTile(row: 2, col: 1),
+                  _buildTile(row: 2, col: 2),
                 ],
               ),
             ),
@@ -116,6 +96,32 @@ class _PlayGroundPageState extends State<PlayGroundPage> {
               ],
             ),
           ]),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTile({required int row, required int col}) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          gameBoard.updateBoard(row, col, Tile.o);
+          game.checkWin();
+          game.checkTie();
+        });
+      },
+      child: Container(
+        width: 30,
+        height: 30,
+        color: Colors.red,
+        child: Center(
+          child: gameBoard.board[row][col] == Tile.empty
+              ? const SizedBox.shrink()
+              : Icon(
+                  gameBoard.board[0][0] == Tile.x
+                      ? Icons.close
+                      : Icons.circle_outlined,
+                ),
         ),
       ),
     );
