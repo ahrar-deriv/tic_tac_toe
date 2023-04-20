@@ -3,6 +3,7 @@
 
 enum Tile { empty, x, o }
 
-enum GameMode { simpleOffline, difficultOffline, online }
+enum GameMode { twoPlayerOffline, simpleOffline, difficultOffline, online }
 
-enum GameRole { player1, player2, system }
+// player2 also could be consider as system
+enum GameRole { player1, player2 }
