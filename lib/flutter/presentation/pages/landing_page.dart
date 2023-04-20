@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac_toe/flutter/data/get_users_request.dart';
+import 'package:tic_tac_toe/flutter/model/user.dart';
 import 'package:tic_tac_toe/flutter/presentation/pages/score_page.dart';
 import 'package:tic_tac_toe/flutter/presentation/pages/select_competitor_page.dart';
 import 'package:tic_tac_toe/flutter/presentation/widgets/offline_level_dialog.dart';
-import 'package:tic_tac_toe/flutter/theme_helper/color_helper.dart';
+import 'package:tic_tac_toe/flutter/presentation/widgets/users_list_item.dart';
 import 'package:tic_tac_toe/flutter/theme_helper/dimention_helper.dart';
 
 class LandingPage extends StatefulWidget {
@@ -13,6 +15,20 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
+  List<User> users = [];
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      GetUsersRequest getUsersRequest = GetUsersRequest();
+      users = await getUsersRequest.getUsers() ?? [];
+
+      setState(() {});
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -45,13 +61,17 @@ class _LandingPageState extends State<LandingPage> {
               const SizedBox(
                 height: side10,
               ),
-              _buildTopScoreList(),
+              _buildTopScoreList(_getTopScoreList()),
               _buildbottomButtons()
             ],
           ),
         ),
       ),
     );
+  }
+
+  List<User> _getTopScoreList() {
+    return users.length < 3 ? users : users.sublist(0, 2);
   }
 
   Expanded _buildbottomButtons() {
@@ -70,17 +90,6 @@ class _LandingPageState extends State<LandingPage> {
                       builder: ((context) => const SelectCompetitorPage()),
                     ),
                   );
-
-                  /// Todo: Check shardPreference that user registered previously or not, if no show this dialog
-                  /// else choose next player randomly
-                  // showDialog(
-                  //   context: context,
-                  //   builder: ((_) => Dialog(
-                  //         child: loginDialog(context),
-                  //         backgroundColor:
-                  //             Theme.of(context).scaffoldBackgroundColor,
-                  //       )),
-                  // );
                 },
                 child: const Text(
                   'Online',
@@ -153,51 +162,20 @@ class _LandingPageState extends State<LandingPage> {
     );
   }
 
-  List<String> topScore = ['zohreh', 'ahrar', 'weng'];
   List<Color> medal = [Colors.yellow, Colors.grey, Colors.brown];
-  List<int> score = [100, 80, 60];
 
-  Widget _buildTopScoreList() {
+  Widget _buildTopScoreList(List<User> users) {
+    print('top score list : ${users.toList().toString()}');
     return ListView.builder(
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) {
-        return Container(
-          margin: const EdgeInsets.symmetric(vertical: 4),
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: darkGrey,
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  topScore[index].toString(),
-                  style: const TextStyle(fontSize: 18),
-                ),
-              ),
-              Expanded(
-                child: Center(
-                  child: Text(
-                    score[index].toString(),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Icon(
-                    Icons.grade_outlined,
-                    color: medal[index],
-                  ),
-                ),
-              ),
-            ],
-          ),
+        return UsersListItem(
+          name: users[index].username!,
+          score: users[index].score!,
+          medal: medal[index],
         );
       },
-      itemCount: topScore.length,
+      itemCount: users.length,
     );
   }
 }
